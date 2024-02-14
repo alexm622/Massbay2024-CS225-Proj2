@@ -4,6 +4,11 @@ package com.example;
 import java.util.Random;
 
 public class Puzzle {
+
+    public Puzzle() {
+        generateRandomBoard();
+    }
+
     /**
      * the first index is the row
      * the second index is the box number horizontally
@@ -125,7 +130,6 @@ public class Puzzle {
     // TODO remove this main function
     public static void main(String[] args) {
         Puzzle p = new Puzzle();
-        p.generateRandomBoard();
         p.printBoard(p.getSolutionBoard());
     }
 
