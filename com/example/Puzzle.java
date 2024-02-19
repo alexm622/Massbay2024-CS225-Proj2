@@ -15,6 +15,7 @@ public class Puzzle {
      * the third index is the index of the correct answer in that specific row in that specific box
      */
     private int[][][] solutionBoard; 
+    private int[][][] currentBoard = new int[3][3][3];
 
     /**
      * generates a random board 
@@ -132,5 +133,21 @@ public class Puzzle {
         Puzzle p = new Puzzle();
         p.printBoard(p.getSolutionBoard());
     }
+
+    public boolean validMove(int x, int y, int value) {
+        //check if the move is valid
+        if (x < 0 || x > 2 || y < 0 || y > 2 || value < 0 || value > 2) {
+            return false;
+        }
+        return true;
+    }
+
+    public void updateSquare(int x, int y, int value) {
+        //update the square at coordinates (x, y) with the given value
+        currentBoard[x][y][value] = value;
+    }
+
+
+
 
 }
