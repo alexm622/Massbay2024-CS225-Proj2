@@ -12,6 +12,8 @@ public class Game {
     private final int WIDTH = 720;
     private final int HEIGHT = 720;
 
+    private Canvas canvas;
+
     public Game(Stage primaryStage) {
         primaryStage.setTitle("Hello World!");
 
@@ -24,10 +26,8 @@ public class Game {
         primaryStage.show();
     }
 
-    private void drawBoard(Scene s) {
-
     private void drawBoard(Scene scene) {
-        Canvas canvas = new Canvas(WIDTH, HEIGHT);
+        canvas = new Canvas(WIDTH, HEIGHT);
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
         // Code to draw the logic puzzle on the canvas
@@ -47,13 +47,13 @@ public class Game {
         ((Group) scene.getRoot()).getChildren().add(canvas);
     }
 
-    }
+
 
     private void updateSquare(int x, int y, String value) {
 
         // Code to update the square at coordinates (x, y) with the given value
         GraphicsContext gc = canvas.getGraphicsContext2D();
-        int cellSize = WIDTH / gridSize;
+        int cellSize = WIDTH / 10;
         int squareX = x * cellSize;
         int squareY = y * cellSize;
 
