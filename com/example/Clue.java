@@ -1,20 +1,21 @@
 package com.example;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
+
 public class Clue {
 
     private String clue;
 
-    private int row;
-    private int col;
+    private int boxnum;
 
     private int[] indiciesEffected;
 
     private ClueType type;
 
-    public Clue(String clue, int row, int col, int[] indiciesEffected, ClueType type) {
+    public Clue(String clue, int boxnum, int[] indiciesEffected, ClueType type) {
         this.clue = clue;
-        this.row = row;
-        this.col = col;
+        this.boxnum = boxnum;
         this.indiciesEffected = indiciesEffected;
         this.type = type;
     }
@@ -28,20 +29,12 @@ public class Clue {
         this.clue = clue;
     }
 
-    public int getRow() {
-        return row;
+    public int getBoxnum() {
+        return boxnum;
     }
 
-    public void setRow(int row) {
-        this.row = row;
-    }
-
-    public int getCol() {
-        return col;
-    }
-
-    public void setCol(int col) {
-        this.col = col;
+    public void setBoxnum(int boxnum) {
+        this.boxnum = boxnum;
     }
 
     public int[] getIndiciesEffected() {
@@ -64,9 +57,8 @@ public class Clue {
     public String toString() {
         return "Clue{" +
                 "clue='" + clue + '\'' +
-                ", row=" + row +
-                ", col=" + col +
-                ", indiciesEffected=" + indiciesEffected +
+                ", boxnum=" + boxnum +
+                ", indiciesEffected=" + Arrays.toString(indiciesEffected) +
                 ", type=" + type +
                 '}';
     }
