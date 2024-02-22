@@ -16,6 +16,7 @@ public class Puzzle {
      * the third index is the index of the correct answer in that specific row in that specific box
      */
     private int[][][] solutionBoard; 
+    private int[][] answerTable;
     private int[][][] currentBoard = new int[WIDTH][HEIGHT][BOX_SIZE];
 
     public Puzzle() {
@@ -34,57 +35,51 @@ public class Puzzle {
      * generates a random board 
      */
     public void generateRandomBoard() {
-        // generate a random board
-        solutionBoard = new int[WIDTH][HEIGHT][BOX_SIZE]; // 3 rows, 3 boxes max width, 3 answers per box
+        //first generate the answer table
+        solutionBoard = new int[WIDTH][HEIGHT][BOX_SIZE];
+        answerTable = new int[WIDTH][BOX_SIZE];
+        Random rand = new Random();
 
-        // fill with -1
-        for (int i = 0; i < WIDTH; i++) {
-            for (int j = 0; j < HEIGHT; j++) {
-                for (int k = 0; k < BOX_SIZE; k++) {
-                    solutionBoard[i][j][k] = -1;
-                }
-            }
-        }
-
-        int width = 0;
-
-        Random r = new Random();
-
-        //build the board
-        for (int i = 0; i < WIDTH; i++) {
-            for (int j = 0; j < HEIGHT - width; j++) {
-                for (int k = 0; k < BOX_SIZE; k++) {
-                    solutionBoard[i][j][k] = r.nextInt(3);
-                }
-            }
-            width++;
-        }
-        //run corrections
-        runCorrections(solutionBoard);
-    }
-
-    /***
-     * runs corrections on the board
-     * @param board the board to correct
-     */
-    private void runCorrections(int[][][] board){
-        //run corrections on the board
-        //check for any rows that have the same answer in the same box
-        //if there are any, change one of the answers to a different answer
-        for (int i = 0; i < WIDTH; i++) {
-            for (int j = 0; j < HEIGHT; j++) {
-                for (int k = 0; k < BOX_SIZE; k++) {
-                    int answer = board[i][j][k];
-                    for (int l = 0; l < BOX_SIZE; l++) {
-                        if (l != k && board[i][j][l] == answer) {
-                            //change the answer
-                            int newAnswer = (answer + 1) % 3;
-                            board[i][j][l] = newAnswer;
+        //first create the answer table
+        for(int i = 0; i < WIDTH; i++) {
+            int[] row = new int[BOX_SIZE];
+            for(int j = 0; j < BOX_SIZE; j++) {
+                int answer = rand.nextInt(3);
+                //check to make sure the answer is not already in the row
+                while(true) {
+                    boolean found = false;
+                    for(int k = 0; k < j; k++) {
+                        if(row[k] == answer) {
+                            found = true;
+                            break;
                         }
                     }
+                    if(found) {
+                        answer = rand.nextInt(3);
+                    } else {
+                        break;
+                    }
                 }
+                row[j] = answer;
+            }
+            answerTable[i] = row;
+        }
+
+        //now create the solution board
+        for (int i = 0; i < WIDTH; i++) {
+            for (int j = 0; j < HEIGHT - i; j++) {
+                int[] row = new int[BOX_SIZE];
+                for (int k = 0; k < BOX_SIZE; k++) {
+                    row[k] = answerTable[i][k];
+                }
+                solutionBoard[i][j] = row;
             }
         }
+
+        
+
+
+        
     }
 
     /**
@@ -130,6 +125,15 @@ public class Puzzle {
 
     }
 
+    public void printTable(int[][] table) {
+        for (int i = 0; i < table.length; i++) {
+            for (int j = 0; j < table[i].length; j++) {
+                System.out.print(table[i][j] + " ");
+            }
+            System.out.println();
+        }
+    }
+
     /***
      * 
      * @param board the board to check
@@ -167,10 +171,15 @@ public class Puzzle {
         return solutionBoard;
     }
 
+    public int[][] getAnswerTable() {
+        return answerTable;
+    }
+
     // TODO remove this main function
     public static void main(String[] args) {
         Puzzle p = new Puzzle();
         p.printBoard(p.getSolutionBoard());
+        p.printTable(p.answerTable);
     }
 
     public boolean validMove(int x, int y, int value) {
