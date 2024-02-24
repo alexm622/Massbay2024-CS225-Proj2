@@ -5,9 +5,10 @@ import java.util.Random;
 
 public class Puzzle {
 
-    public Puzzle() {
-        generateRandomBoard();
-    }
+    public static final int WIDTH = 3;
+    public static final int HEIGHT = 3;
+    public static final int BOX_SIZE = 3;
+    public final int NUM_BOXES;
 
     /**
      * the first index is the row
@@ -15,37 +16,70 @@ public class Puzzle {
      * the third index is the index of the correct answer in that specific row in that specific box
      */
     private int[][][] solutionBoard; 
-    private int[][][] currentBoard = new int[3][3][3];
+    private int[][] answerTable;
+    private int[][][] currentBoard = new int[WIDTH][HEIGHT][BOX_SIZE];
+
+    public Puzzle() {
+        int numBoxes = 0;
+        for (int i = WIDTH; i > 0; i--) {
+            numBoxes += i;
+        }
+        NUM_BOXES = numBoxes;
+        generateRandomBoard();
+    }
+
+
+    
 
     /**
      * generates a random board 
      */
     public void generateRandomBoard() {
-        // generate a random board
-        solutionBoard = new int[3][3][3]; // 3 rows, 3 boxes max width, 3 answers per box
+        //first generate the answer table
+        solutionBoard = new int[WIDTH][HEIGHT][BOX_SIZE];
+        answerTable = new int[WIDTH][BOX_SIZE];
+        Random rand = new Random();
 
-        // fill with -1
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                for (int k = 0; k < 3; k++) {
-                    solutionBoard[i][j][k] = -1;
+        //first create the answer table
+        for(int i = 0; i < WIDTH; i++) {
+            int[] row = new int[BOX_SIZE];
+            for(int j = 0; j < BOX_SIZE; j++) {
+                int answer = rand.nextInt(3);
+                //check to make sure the answer is not already in the row
+                while(true) {
+                    boolean found = false;
+                    for(int k = 0; k < j; k++) {
+                        if(row[k] == answer) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if(found) {
+                        answer = rand.nextInt(3);
+                    } else {
+                        break;
+                    }
                 }
+                row[j] = answer;
+            }
+            answerTable[i] = row;
+        }
+
+        //now create the solution board
+        for (int i = 0; i < WIDTH; i++) {
+            for (int j = 0; j < HEIGHT - i; j++) {
+                int[] row = new int[BOX_SIZE];
+                for (int k = 0; k < BOX_SIZE; k++) {
+                    row[k] = answerTable[i][k];
+                }
+                solutionBoard[i][j] = row;
             }
         }
 
-        int width = 0;
+        
 
-        Random r = new Random();
 
-        //build the board
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3 - width; j++) {
-                for (int k = 0; k < 3; k++) {
-                    solutionBoard[i][j][k] = r.nextInt(3);
-                }
-            }
-            width++;
-        }
+        
     }
 
     /**
@@ -58,14 +92,14 @@ public class Puzzle {
         // being the index of the 1
 
         String[] buffer = new String[3];
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < WIDTH; i++) {
             buffer[i] = "";
         }
 
         int width = 0;
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3  - width; j++) {
-                for (int k = 0; k < 3; k++) {
+        for (int i = 0; i < WIDTH; i++) {
+            for (int j = 0; j < HEIGHT  - width; j++) {
+                for (int k = 0; k < BOX_SIZE; k++) {
                     //get the answer
                     int answer = board[i][j][k];
                     //print the row
@@ -80,7 +114,7 @@ public class Puzzle {
                 
             }
             //print the buffer
-            for (int l = 0; l < 3; l++) {
+            for (int l = 0; l < WIDTH; l++) {
                 System.out.println(buffer[l]);
                 buffer[l] = "";
             }
@@ -89,6 +123,15 @@ public class Puzzle {
             width++;
         }
 
+    }
+
+    public void printTable(int[][] table) {
+        for (int i = 0; i < table.length; i++) {
+            for (int j = 0; j < table[i].length; j++) {
+                System.out.print(table[i][j] + " ");
+            }
+            System.out.println();
+        }
     }
 
     /***
@@ -103,9 +146,9 @@ public class Puzzle {
             return false;
         }
 
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                for (int k = 0; k < 3; k++) {
+        for (int i = 0; i < WIDTH; i++) {
+            for (int j = 0; j < HEIGHT; j++) {
+                for (int k = 0; k < BOX_SIZE; k++) {
                     if (board[i][j][k] != solutionBoard[i][j][k]) {
                         return false;
                     }
@@ -128,10 +171,15 @@ public class Puzzle {
         return solutionBoard;
     }
 
+    public int[][] getAnswerTable() {
+        return answerTable;
+    }
+
     // TODO remove this main function
     public static void main(String[] args) {
         Puzzle p = new Puzzle();
         p.printBoard(p.getSolutionBoard());
+        p.printTable(p.answerTable);
     }
 
     public boolean validMove(int x, int y, int value) {
