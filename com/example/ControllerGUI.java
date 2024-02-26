@@ -1,5 +1,3 @@
-package com.example;
-
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -59,7 +57,8 @@ public class ControllerGUI {
                         int pos = 0; // Position in the answer sheet
 
                         for (Node node : grids.getChildren()) {
-                                if (node instanceof GameButton button) {
+                                if (node.getClass() == GameButton.class) {
+                                        GameButton button = (GameButton) node;
                                         if (!button.getText().equals(answerSheet[pos])) {
                                                 button.setText(" ");
                                                 button.setDisable(false);
@@ -197,7 +196,8 @@ public class ControllerGUI {
         }
         private void toggleRowColButtons(GridPane grid, int row, int col, boolean disable, GameButton originButton) {
                 for (Node node : grid.getChildren()) {
-                        if (node instanceof GameButton btn) {
+                        if (node.getClass() == GameButton.class) {
+                                GameButton btn = (GameButton) node;
                                 if (btn == originButton) continue; // Skip the origin button
 
                                 int btnRow = GridPane.getRowIndex(btn);
@@ -223,7 +223,8 @@ public class ControllerGUI {
         }
         private boolean isInLineWithAnotherO(GridPane grid, int row, int col, GameButton originButton) {
                 for (Node node : grid.getChildren()) {
-                        if (node instanceof GameButton btn) {
+                        if (node.getClass() == GameButton.class) {
+                                GameButton btn = (GameButton) node;
                                 int btnRow = GridPane.getRowIndex(btn);
                                 int btnCol = GridPane.getColumnIndex(btn);
 
@@ -293,7 +294,8 @@ public class ControllerGUI {
         private void Reset() {
                 for (GridPane grids: gridPanes){
                         for (Node node : grids.getChildren()) {
-                                if (node instanceof GameButton button) {
+                                if (node.getClass() == GameButton.class) {
+                                        GameButton button = (GameButton) node;
                                         button.setText(" ");
                                         button.setDisable(false);
                                 }
